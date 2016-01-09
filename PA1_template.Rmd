@@ -19,8 +19,12 @@ activity <- read.csv(unz("activity.zip", "activity.csv")) %>%
 ## What is mean total number of steps taken per day?
 ```{r echo = FALSE, message = FALSE}
 library("ggplot2")
-totalStepsPerDay <- activity %>% group_by(date) %>% summarise(total = sum(steps))
-ggplot(totalStepsPerDay, aes(total)) + geom_histogram() + xlab("Total number of steps taken each day")
+totalStepsPerDay <- activity %>% 
+    group_by(date) %>% 
+    summarise(total = sum(steps))
+ggplot(totalStepsPerDay, aes(total)) + 
+    geom_histogram() + 
+    xlab("Total number of steps taken each day")
 ``` 
 
 ```{r echo = TRUE}
@@ -37,12 +41,19 @@ Median steps per day: `r medianStepsPerDay`
 
 ## What is the average daily activity pattern?
 ```{r echo = TRUE}
-meanStepsPerInterval <- activity %>% group_by(interval) %>% summarise(average = mean(steps, na.rm = TRUE)) 
-with(meanStepsPerInterval, plot(interval, average, type = "l", xlab = "5 minutes interval", ylab = "Average number of steps", lwd = 2))
+meanStepsPerInterval <- activity %>% 
+    group_by(interval) %>% 
+    summarise(average = mean(steps, na.rm = TRUE)) 
+with(
+    meanStepsPerInterval, 
+    plot(interval, average, type = "l", 
+         xlab = "5 minutes interval", ylab = "Average number of steps", 
+         lwd = 2))
 ```
 
 ```{r echo = TRUE}
-maxStepInterval <- (meanStepsPerInterval %>% filter(average == max(meanStepsPerInterval$average)))$interval
+maxStepInterval <- (meanStepsPerInterval %>% 
+        filter(average == max(meanStepsPerInterval$average)))$interval
 ```
 
 Interval containing maximum number of steps: `r maxStepInterval`
@@ -57,23 +68,44 @@ Total number of missing values in the dataset: `r totalMissingValues`
 
 
 
-Fill missing steps with average per step per day:
+Fill missing steps with mean steps per interval:
 ```{r echo = TRUE}
-noNasTotalStepsPerDay <- activity %>% 
-    group_by(date) %>% 
-    summarise(total = sum(steps)) %>%
-    mutate(total = ifelse(is.na(total), mean(total, na.rm = TRUE), total))
+meanStepsPerInterval <-  mean(activity$steps, na.rm = TRUE)
+noNasActivity <- activity %>% 
+    mutate(steps = ifelse(is.na(steps), meanStepsPerInterval, steps))
 ```
 
 
 We can see that in this case, replacing missing values with average significantly
-increases the count in the histogram, for x value = mean (as we count expect).
+increases the count in the histogram for mean value (as we could expect).
 
 ```{r echo = FALSE, message = FALSE}
 library("ggplot2")
+noNasTotalStepsPerDay <- noNasActivity %>% 
+    group_by(date) %>% 
+    summarise(total = sum(steps))
 ggplot(noNasTotalStepsPerDay, aes(total)) + geom_histogram() + xlab("Total number of steps taken each day")
 ``` 
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+We can see that activity is much more constant on weekends than during 
+regular week days. One explanation for that could be that the test subject 
+works in during regular days in a sitting position.
+
+```{r echo = TRUE}
+library("ggplot2")
+noNasActivityWithWeekDays <- noNasActivity %>% 
+    mutate(dayType = as.factor(
+        ifelse(weekdays(date) %in% c("Saturday", "Sunday"), "weekend", "weekday")
+    ))
+noNasMeanStepsPerInterval <- noNasActivityWithWeekDays %>% 
+    group_by(dayType, interval) %>% 
+    summarise(average = mean(steps)) 
+ggplot(noNasMeanStepsPerInterval, aes(interval, average)) + 
+    geom_line() +
+    facet_grid(dayType ~ .)
+```
+
