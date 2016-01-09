@@ -23,15 +23,16 @@ totalStepsPerDay <- activity %>% group_by(date) %>% summarise(total = sum(steps)
 ggplot(totalStepsPerDay, aes(total)) + geom_histogram() + xlab("Total number of steps taken each day")
 ``` 
 
-Mean:
 ```{r echo = TRUE}
-mean(totalStepsPerDay$total, na.rm = TRUE)
+meanStepsPerDay <- as.integer(mean(totalStepsPerDay$total, na.rm = TRUE))
 ```
 
-Median:
+Mean steps per day: `r meanStepsPerDay`
+
 ```{r echo = TRUE}
-median(totalStepsPerDay$total, na.rm = TRUE)
+medianStepsPerDay <- median(totalStepsPerDay$total, na.rm = TRUE)
 ```
+Median steps per day: `r medianStepsPerDay`
 
 
 ## What is the average daily activity pattern?
@@ -40,14 +41,38 @@ meanStepsPerInterval <- activity %>% group_by(interval) %>% summarise(average = 
 with(meanStepsPerInterval, plot(interval, average, type = "l", xlab = "5 minutes interval", ylab = "Average number of steps", lwd = 2))
 ```
 
-Interval containing maximum number of steps:
 ```{r echo = TRUE}
-(meanStepsPerInterval %>% filter(average == max(meanStepsPerInterval$average)))$interval
+maxStepInterval <- (meanStepsPerInterval %>% filter(average == max(meanStepsPerInterval$average)))$interval
 ```
 
+Interval containing maximum number of steps: `r maxStepInterval`
 
 
 ## Imputing missing values
+```{r echo = TRUE}
+totalMissingValues <- activity %>% filter(is.na(steps)) %>% nrow
+```
+
+Total number of missing values in the dataset: `r totalMissingValues`
+
+
+
+Fill missing steps with average per step per day:
+```{r echo = TRUE}
+noNasTotalStepsPerDay <- activity %>% 
+    group_by(date) %>% 
+    summarise(total = sum(steps)) %>%
+    mutate(total = ifelse(is.na(total), mean(total, na.rm = TRUE), total))
+```
+
+
+We can see that in this case, replacing missing values with average significantly
+increases the count in the histogram, for x value = mean (as we count expect).
+
+```{r echo = FALSE, message = FALSE}
+library("ggplot2")
+ggplot(noNasTotalStepsPerDay, aes(total)) + geom_histogram() + xlab("Total number of steps taken each day")
+``` 
 
 
 

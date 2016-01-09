@@ -15,25 +15,18 @@ activity <- read.csv(unz("activity.zip", "activity.csv")) %>%
 ## What is mean total number of steps taken per day?
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)\
 
-Mean:
 
 ```r
-mean(totalStepsPerDay$total, na.rm = TRUE)
+meanStepsPerDay <- as.integer(mean(totalStepsPerDay$total, na.rm = TRUE))
 ```
 
-```
-## [1] 10766.19
-```
+Mean steps per day: 10766
 
-Median:
 
 ```r
-median(totalStepsPerDay$total, na.rm = TRUE)
+medianStepsPerDay <- median(totalStepsPerDay$total, na.rm = TRUE)
 ```
-
-```
-## [1] 10765
-```
+Median steps per day: 10765
 
 
 ## What is the average daily activity pattern?
@@ -45,19 +38,37 @@ with(meanStepsPerInterval, plot(interval, average, type = "l", xlab = "5 minutes
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)\
 
-Interval containing maximum number of steps:
 
 ```r
-(meanStepsPerInterval %>% filter(average == max(meanStepsPerInterval$average)))$interval
+maxStepInterval <- (meanStepsPerInterval %>% filter(average == max(meanStepsPerInterval$average)))$interval
 ```
 
-```
-## [1] 835
-```
-
+Interval containing maximum number of steps: 835
 
 
 ## Imputing missing values
+
+```r
+totalMissingValues <- activity %>% filter(is.na(steps)) %>% nrow
+```
+
+Total number of missing values in the dataset: 2304
+
+
+
+Fill missing steps with average per step per day:
+
+```r
+noNasTotalStepsPerDay <- activity %>% 
+    group_by(date) %>% 
+    summarise(total = sum(steps)) %>%
+    mutate(total = ifelse(is.na(total), mean(total, na.rm = TRUE), total))
+```
+
+
+We can see that in this case, TODO
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)\
 
 
 
