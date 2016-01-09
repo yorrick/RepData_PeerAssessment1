@@ -18,7 +18,7 @@ activity <- read.csv(unz("activity.zip", "activity.csv")) %>%
 Mean:
 
 ```r
-mean(stepsPerDay$total, na.rm = TRUE)
+mean(totalStepsPerDay$total, na.rm = TRUE)
 ```
 
 ```
@@ -28,7 +28,7 @@ mean(stepsPerDay$total, na.rm = TRUE)
 Median:
 
 ```r
-median(stepsPerDay$total, na.rm = TRUE)
+median(totalStepsPerDay$total, na.rm = TRUE)
 ```
 
 ```
@@ -37,6 +37,23 @@ median(stepsPerDay$total, na.rm = TRUE)
 
 
 ## What is the average daily activity pattern?
+
+```r
+meanStepsPerInterval <- activity %>% group_by(interval) %>% summarise(average = mean(steps, na.rm = TRUE)) 
+with(meanStepsPerInterval, plot(interval, average, type = "l", xlab = "5 minutes interval", ylab = "Average number of steps", lwd = 2))
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)\
+
+Interval containing maximum number of steps:
+
+```r
+(meanStepsPerInterval %>% filter(average == max(meanStepsPerInterval$average)))$interval
+```
+
+```
+## [1] 835
+```
 
 
 
