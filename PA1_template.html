@@ -98,7 +98,7 @@ with(
 <div id="imputing-missing-values" class="section level2">
 <h2>Imputing missing values</h2>
 <pre class="r"><code>totalMissingValues &lt;- activity %&gt;% filter(is.na(steps)) %&gt;% nrow</code></pre>
-<p>Total number of missing values in the dataset: 2304</p>
+<p>Total number of missing values in the dataset: 2304 (13.1147541%)</p>
 <p>Fill missing steps with mean steps per interval:</p>
 <pre class="r"><code>meanStepsPerInterval &lt;-  mean(activity$steps, na.rm = TRUE)
 noNasActivity &lt;- activity %&gt;% 
@@ -108,7 +108,7 @@ noNasActivity &lt;- activity %&gt;%
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
-<p>We can see that activity is much more constant on weekends than during regular week days. One explanation for that could be that the test subject works in during regular days in a sitting position.</p>
+<p>We can see that activity is much more spread throughout daylight on weekends than during regular week days. One explanation for that could be that the test subject works in during regular days in a sitting position, and goes to work around 8:30.</p>
 <pre class="r"><code>library(&quot;ggplot2&quot;)
 noNasActivityWithWeekDays &lt;- noNasActivity %&gt;% 
     mutate(dayType = as.factor(

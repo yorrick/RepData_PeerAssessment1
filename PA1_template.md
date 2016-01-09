@@ -59,7 +59,8 @@ Interval containing maximum number of steps: 835
 totalMissingValues <- activity %>% filter(is.na(steps)) %>% nrow
 ```
 
-Total number of missing values in the dataset: 2304
+Total number of missing values in the dataset: 2304 
+(13.1147541%)
 
 
 
@@ -81,9 +82,9 @@ increases the count in the histogram for mean value (as we could expect).
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-We can see that activity is much more constant on weekends than during 
+We can see that activity is much more spread throughout daylight on weekends than during 
 regular week days. One explanation for that could be that the test subject 
-works in during regular days in a sitting position.
+works in during regular days in a sitting position, and goes to work around 8:30.
 
 
 ```r
