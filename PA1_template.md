@@ -1,36 +1,38 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r echo = TRUE, message = FALSE}
+
+```r
 library("dplyr")
 library("lubridate")
 activity <- read.csv(unz("activity.zip", "activity.csv")) %>% 
     tbl_df %>% 
     mutate(date = ymd(date))
-``` 
+```
 
 
 ## What is mean total number of steps taken per day?
-```{r echo = FALSE, message = FALSE}
-library("ggplot2")
-stepsPerDay <- activity %>% group_by(date) %>% summarise(total = sum(steps))
-ggplot(stepsPerDay, aes(total)) + geom_histogram() + xlab("Total number of steps taken each day")
-``` 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)\
 
 Mean:
-```{r echo = TRUE}
+
+```r
 mean(stepsPerDay$total, na.rm = TRUE)
 ```
 
+```
+## [1] 10766.19
+```
+
 Median:
-```{r echo = TRUE}
+
+```r
 median(stepsPerDay$total, na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 
